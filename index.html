@@ -1,172 +1,53 @@
-<!DOCTYPE html>
-<html lang="ur">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khan Institute YT Automation</title>
-<style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0a0d0b; color: #eef0ec; font-family: system-ui, -apple-system, sans-serif; padding: 20px 10px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-  .box { width: 100%; max-width: 620px; background: #131815; padding: 28px; border-radius: 16px; border: 1px solid #222b26; box-shadow: 0 16px 40px rgba(0,0,0,0.8); }
-  
-  .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #222b26; padding-bottom: 14px; }
-  .header h2 { font-size: 22px; color: #fff; letter-spacing: 0.5px; }
-  .header p { color: #8a958d; font-size: 12px; margin-top: 4px; }
-  
-  .section-title { font-size: 12px; color: #c9f158; font-weight: 700; text-transform: uppercase; margin: 18px 0 10px 0; display: flex; align-items: center; gap: 6px; }
-  .section-title::after { content: ''; flex: 1; height: 1px; background: #222b26; }
-  
-  .form-group { margin-bottom: 14px; text-align: left; }
-  label { font-size: 11px; color: #a3b3a9; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 600; }
-  
-  input, textarea, select { width: 100%; padding: 11px 13px; background: #0c0f0d; border: 1px solid #222b26; color: #fff; border-radius: 8px; font-size: 13px; outline: none; transition: 0.2s; }
-  input:focus, textarea:focus, select:focus { border-color: #c9f158; }
-  textarea { resize: vertical; min-height: 90px; }
-  
-  .row { display: flex; gap: 10px; }
-  .col { flex: 1; }
-  
-  .badge-pro { background: #ffb703; color: #000; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 800; }
-  
-  .btn-main { width: 100%; padding: 15px; background: #c9f158; color: #000; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; margin-top: 15px; transition: 0.2s; }
-  .btn-main:hover { background: #b5dc43; }
-  .btn-sec { width: 100%; padding: 10px; background: #1a221e; color: #c9f158; font-weight: 600; border: 1px solid #28342e; border-radius: 8px; cursor: pointer; font-size: 12px; margin-bottom: 12px; }
-  
-  .disclaimer-box { background: #0a0d0b; border: 1px dashed #28342e; padding: 10px; border-radius: 8px; font-size: 11px; color: #6c7870; margin-top: 15px; text-align: left; line-height: 1.4; }
-  
-  .footer-branding { text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid #1f2722; font-size: 12px; color: #8a958d; }
-  .footer-branding span { color: #c9f158; font-weight: 700; }
-</style>
-</head>
-<body>
-
+<!-- نیا انٹرفیس جس میں پرو-پاسورڈ، اسٹائل سلیکٹر، اور سائلنس ٹرمنگ کے آپشنز ہیں -->
 <div class="box">
-  <div class="header">
-    <h2>Khan Institute YT Automation</h2>
-    <p>AI Documentary & Automation Suite</p>
-  </div>
-
-  <!-- 1. Video Layout & Dimensions -->
-  <span class="section-title">1. Aspect Ratio & AI Engine</span>
-  <div class="row">
-    <div class="col form-group">
-      <label for="aspectRatio">📐 Video Dimensions</label>
-      <select id="aspectRatio">
-        <option value="16:9" selected>🖥️ Long Video (16:9 YouTube)</option>
-        <option value="9:16">📱 Shorts / Reel (9:16 Vertical)</option>
-      </select>
-    </div>
-    <div class="col form-group">
-      <label for="imageEngine">🖼️ AI Image Engine</label>
-      <select id="imageEngine">
-        <option value="pollinations-flux">Flux AI (4K Photorealistic)</option>
-        <option value="wikimedia">Wikimedia Commons (Real Photos)</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- 2. Transitions & Captions -->
-  <span class="section-title">2. Transitions & Auto Captions</span>
-  <div class="row">
-    <div class="col form-group">
-      <label for="transitions">🎬 Visual Transitions</label>
-      <select id="transitions" onchange="checkPro(this)">
-        <option value="fade">Simple Crossfade (Free)</option>
-        <option value="film-burn">🔒 35mm Film Burn & Sepia Flash (Pro)</option>
-        <option value="glitch">🔒 Historical Glitch & Shake (Pro)</option>
-        <option value="zoom-blur">🔒 Dynamic Zoom Blur (Pro)</option>
-      </select>
-    </div>
-    <div class="col form-group">
-      <label for="captions">💬 Auto Subtitles / Captions</label>
-      <select id="captions" onchange="checkPro(this)">
-        <option value="yellow-mrbeast">CapCut / MrBeast Style (Yellow Word-by-Word)</option>
-        <option value="minimal">Minimal Classic White Subtitles</option>
-        <option value="neon-red">🔒 Cinematic Viral Red Glow (Pro)</option>
-        <option value="none">No Captions / Subtitles</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- 3. Voiceover & Audio Settings -->
-  <span class="section-title">3. Voiceover & Audio Humanizer</span>
-  <div class="form-group">
-    <label for="voiceSource">🎙️ Audio Input Method</label>
-    <select id="voiceSource">
-      <option value="record">Record Direct Voiceover (Teleprompter Mode)</option>
-      <option value="upload">Upload Combined MP3 / SpeechMa Audio</option>
-      <option value="auto-tts">Auto Speech Generation</option>
-    </select>
-  </div>
+  <h2>Khan Institute YT Automation (Power Mode)</h2>
   
+  <!-- پرو پاسورڈ تاکہ صرف آپ یا آپ کے کلائنٹ استعمال کر سکیں -->
+  <div class="form-group">
+    <label>🔑 Pro Access Password</label>
+    <input type="password" id="proPassword" placeholder="Enter Password for Pro Features">
+  </div>
+
   <div class="row">
     <div class="col form-group">
-      <label for="voiceFx">🎛️ Vocal Enhancer <span class="badge-pro">PRO</span></label>
-      <select id="voiceFx" onchange="checkPro(this)">
-        <option value="normal">Raw Voice (No FX)</option>
-        <option value="studio">🔒 Studio EQ & Warmth (Pro)</option>
-        <option value="deep">🔒 Deep Documentary Vocal (Pro)</option>
+      <label>🎨 Visual Style</label>
+      <select id="style">
+        <option value="cinematic-doc">Cinematic Documentary</option>
+        <option value="3d-animation">3D Animation</option>
+        <option value="anime">Anime Style</option>
+        <option value="whiteboard">Whiteboard / Hand Draw</option>
       </select>
     </div>
     <div class="col form-group">
-      <label for="bgmSelect">🎵 Background Music</label>
-      <select id="bgmSelect">
-        <option value="custom">Custom MP3 Upload</option>
-        <option value="dramatic">Dramatic Suspense (Built-in)</option>
-        <option value="history">Historical Mood (Built-in)</option>
-        <option value="none">Disable Music</option>
+      <label>🖼️ Scene Source</label>
+      <select id="sceneSource">
+        <option value="flux">AI Flux Generation Only</option>
+        <option value="mixed">Hybrid (Wiki Mix + Flux)</option>
       </select>
     </div>
   </div>
 
-  <!-- 4. Script & Processing -->
-  <span class="section-title">4. Scripting & Rendering</span>
-  <button class="btn-sec" onclick="copyPrompt()">📋 Copy NotebookLM / Gemini Prompt Template</button>
-  
   <div class="form-group">
-    <label for="script-input">📝 Script Input (Voice Line || Image Prompt)</label>
-    <textarea id="script-input" placeholder="پاکستان کی تاریخ کا بڑا موڑ || 1970s historical photo, political conference, cinematic lighting"></textarea>
+    <label>🤖 Consistent Character Description</label>
+    <input type="text" id="character" placeholder="e.g. A young historian wearing glasses, brown coat...">
   </div>
 
-  <button class="btn-main" onclick="startRender()">🚀 RENDER FINAL VIDEO WITH CAPTIONS</button>
-
-  <!-- Legal Disclaimer -->
-  <div class="disclaimer-box">
-    <b>⚖️ Fair Use & Legal Disclaimer:</b> Auto-generated content, visuals, and audio produced by this tool are compliant with YouTube Fair Use guidelines. Ensure all background audio assets comply with copyright standards before commercial monetization.
+  <div class="row">
+    <div class="col form-group">
+      <label>✂️ Silence Trim</label>
+      <select id="trimSilence">
+        <option value="yes">Auto-Remove Silence</option>
+        <option value="no">Keep Original</option>
+      </select>
+    </div>
+    <div class="col form-group">
+      <label>🎵 BGM Volume Sync</label>
+      <select id="bgmSync">
+        <option value="auto">Auto-Adjust Volume</option>
+      </select>
+    </div>
   </div>
 
-  <!-- Branding Footer -->
-  <div class="footer-branding">
-    Created with ❤️ by <span>Cyber Expert Ahmad Khan</span>
-  </div>
+  <textarea id="script-input" placeholder="Voice Line || Image Prompt"></textarea>
+  <button class="btn-main" onclick="startPowerRender()">🚀 START PARALLEL POWER RENDER</button>
 </div>
-
-<script>
-  let isPro = false;
-
-  function checkPro(elem) {
-    if ((elem.value.includes('film-burn') || elem.value.includes('glitch') || elem.value.includes('zoom-blur') || elem.value.includes('neon-red') || elem.value.includes('studio') || elem.value.includes('deep')) && !isPro) {
-      alert("👑 یہ پرو ٹرانزیشن/کیپشن/وائس ایفیکٹ صرف PRO ممبرز کے لیے لاکڈ ہے۔");
-      elem.selectedIndex = 0;
-    }
-  }
-
-  function copyPrompt() {
-    const p = `You are an expert YouTube documentary scriptwriter. Analyze my topic and generate line-by-line output:
-STRICT FORMAT: Voiceover Line || Detailed English Image Prompt`;
-    navigator.clipboard.writeText(p);
-    alert("Prompt کاپی ہو گیا ہے!");
-  }
-
-  function startRender() {
-    const txt = document.getElementById('script-input').value;
-    if(!txt.trim()){
-      alert("براہ کرم اسکرپٹ ایڈ کریں!");
-      return;
-    }
-    alert("Khan Institute YT Automation سے ویڈیو رینڈرنگ شروع ہو گئی ہے!");
-  }
-</script>
-
-</body>
-</html>
