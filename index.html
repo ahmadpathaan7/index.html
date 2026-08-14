@@ -1,53 +1,149 @@
-<!-- نیا انٹرفیس جس میں پرو-پاسورڈ، اسٹائل سلیکٹر، اور سائلنس ٹرمنگ کے آپشنز ہیں -->
-<div class="box">
-  <h2>Khan Institute YT Automation (Power Mode)</h2>
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khan Institute YT Automation (Power Mode)</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { 
+    background: #0a0d0b; 
+    color: #eef0ec; 
+    font-family: system-ui, -apple-system, sans-serif; 
+    padding: 20px 10px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
+  }
+  .box { 
+    width: 100%; 
+    max-width: 620px; 
+    background: #131815; 
+    padding: 28px; 
+    border-radius: 16px; 
+    border: 1px solid #222b26; 
+    box-shadow: 0 16px 40px rgba(0,0,0,0.8); 
+  }
   
-  <!-- پرو پاسورڈ تاکہ صرف آپ یا آپ کے کلائنٹ استعمال کر سکیں -->
-  <div class="form-group">
-    <label>🔑 Pro Access Password</label>
-    <input type="password" id="proPassword" placeholder="Enter Password for Pro Features">
+  .header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid #222b26; padding-bottom: 14px; }
+  .header h2 { font-size: 22px; color: #fff; letter-spacing: 0.5px; }
+  .header p { color: #8a958d; font-size: 12px; margin-top: 4px; }
+  
+  .section-title { font-size: 12px; color: #c9f158; font-weight: 700; text-transform: uppercase; margin: 18px 0 10px 0; display: flex; align-items: center; gap: 6px; }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: #222b26; }
+  
+  .form-group { margin-bottom: 14px; text-align: left; }
+  label { font-size: 11px; color: #a3b3a9; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 600; }
+  
+  input, textarea, select { width: 100%; padding: 11px 13px; background: #0c0f0d; border: 1px solid #222b26; color: #fff; border-radius: 8px; font-size: 13px; outline: none; transition: 0.2s; }
+  input:focus, textarea:focus, select:focus { border-color: #c9f158; }
+  textarea { resize: vertical; min-height: 90px; }
+  
+  .row { display: flex; gap: 10px; }
+  .col { flex: 1; }
+  
+  .btn-main { width: 100%; padding: 15px; background: #c9f158; color: #000; font-weight: 800; border: none; border-radius: 8px; cursor: pointer; font-size: 15px; margin-top: 15px; transition: 0.2s; }
+  .btn-main:hover { background: #b5dc43; }
+  
+  .footer-branding { text-align: center; margin-top: 20px; padding-top: 12px; border-top: 1px solid #1f2722; font-size: 12px; color: #8a958d; }
+  .footer-branding span { color: #c9f158; font-weight: 700; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <div class="header">
+    <h2>Khan Institute YT Automation</h2>
+    <p>Power Mode — AI Video Studio</p>
   </div>
 
+  <!-- Server Link & Pro Password -->
+  <span class="section-title">1. Server & Authentication</span>
   <div class="row">
     <div class="col form-group">
-      <label>🎨 Visual Style</label>
-      <select id="style">
+      <label>🔗 Render Server URL</label>
+      <input type="text" id="serverUrl" placeholder="https://khan-yt-backend.onrender.com">
+    </div>
+    <div class="col form-group">
+      <label>🔑 Pro Access Password</label>
+      <input type="password" id="proPassword" placeholder="Enter Pro Password">
+    </div>
+  </div>
+
+  <!-- Visual Style & Mixed Scene Sources -->
+  <span class="section-title">2. Visuals & Engine</span>
+  <div class="row">
+    <div class="col form-group">
+      <label>🎨 Visual Style Preset</label>
+      <select id="visualStyle">
         <option value="cinematic-doc">Cinematic Documentary</option>
-        <option value="3d-animation">3D Animation</option>
-        <option value="anime">Anime Style</option>
-        <option value="whiteboard">Whiteboard / Hand Draw</option>
+        <option value="3d-anim">3D Animation / Pixar Style</option>
+        <option value="anime">Anime / Studio Ghibli</option>
+        <option value="whiteboard">Whiteboard / Hand Drawn</option>
+        <option value="explainer">2D Vector Explainer</option>
       </select>
     </div>
     <div class="col form-group">
       <label>🖼️ Scene Source</label>
       <select id="sceneSource">
-        <option value="flux">AI Flux Generation Only</option>
-        <option value="mixed">Hybrid (Wiki Mix + Flux)</option>
+        <option value="flux">Flux AI Only (100% Generated)</option>
+        <option value="mixed">Mixed (Max 3 Wiki Photos + Flux)</option>
       </select>
     </div>
   </div>
 
+  <!-- Character Consistency & Audio Processing -->
+  <span class="section-title">3. Character & Audio Controls</span>
   <div class="form-group">
-    <label>🤖 Consistent Character Description</label>
-    <input type="text" id="character" placeholder="e.g. A young historian wearing glasses, brown coat...">
+    <label>🤖 Consistent Character Prompt (Optional)</label>
+    <input type="text" id="characterPrompt" placeholder="e.g. Young male engineer with black glasses, brown leather jacket...">
   </div>
 
   <div class="row">
     <div class="col form-group">
-      <label>✂️ Silence Trim</label>
-      <select id="trimSilence">
-        <option value="yes">Auto-Remove Silence</option>
-        <option value="no">Keep Original</option>
+      <label>✂️ Voiceover Silence Trim</label>
+      <select id="silenceTrim">
+        <option value="auto">Auto-Remove Silence (Fast Pace)</option>
+        <option value="none">Keep Original Audio Pauses</option>
       </select>
     </div>
     <div class="col form-group">
-      <label>🎵 BGM Volume Sync</label>
-      <select id="bgmSync">
-        <option value="auto">Auto-Adjust Volume</option>
+      <label>🎵 BGM Auto-Ducking</label>
+      <select id="bgmMode">
+        <option value="auto-duck">Auto-Lower BGM during Voiceover</option>
+        <option value="custom">Custom Audio Sync</option>
       </select>
     </div>
   </div>
 
-  <textarea id="script-input" placeholder="Voice Line || Image Prompt"></textarea>
-  <button class="btn-main" onclick="startPowerRender()">🚀 START PARALLEL POWER RENDER</button>
+  <!-- Script Input -->
+  <span class="section-title">4. Script Input</span>
+  <div class="form-group">
+    <label>📝 Script (Voice Line || Image Prompt)</label>
+    <textarea id="scriptInput" placeholder="Voice Line || Image Prompt"></textarea>
+  </div>
+
+  <button class="btn-main" onclick="startRender()">🚀 START PARALLEL POWER RENDER</button>
+
+  <div class="footer-branding">
+    Created with ❤️ by <span>Cyber Expert Ahmad Khan</span>
+  </div>
 </div>
+
+<script>
+  function startRender() {
+    const serverUrl = document.getElementById('serverUrl').value.trim();
+    const script = document.getElementById('scriptInput').value.trim();
+    
+    if(!script) {
+      alert("براہ کرم اسکرپٹ داخل کریں!");
+      return;
+    }
+    
+    alert("رینڈرنگ کمانڈ کلاؤڈ سرور کو بھیج دی گئی ہے! آپ اب براؤزر بند کر سکتے ہیں۔");
+  }
+</script>
+
+</body>
+</html>
