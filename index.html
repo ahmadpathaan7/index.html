@@ -3,22 +3,172 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VIP YT Automator v4.0</title>
+<title>VIP YT Automator v5.0</title>
 <style>
-  body{ background:#0f1210; color:#eef0ec; font-family:sans-serif; padding:20px; text-align:center; }
-  .box{ max-width:600px; margin:auto; background:#1a201d; padding:20px; border-radius:10px; border:1px solid #2a332e; }
-  input, textarea{ width:100%; padding:10px; margin:10px 0; background:#161b18; border:1px solid #2a332e; color:#fff; border-radius:5px; box-sizing:border-box; }
-  button{ width:100%; padding:12px; background:#c9f158; color:#000; font-weight:bold; border:none; border-radius:5px; cursor:pointer; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { 
+    background: #0c0f0d; 
+    color: #eef0ec; 
+    font-family: system-ui, -apple-system, sans-serif; 
+    padding: 20px 15px; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .box { 
+    width: 100%;
+    max-width: 520px; 
+    background: #141a17; 
+    padding: 28px; 
+    border-radius: 16px; 
+    border: 1px solid #232d28; 
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6); 
+  }
+  .header { text-align: center; margin-bottom: 20px; }
+  .header h2 { font-size: 22px; color: #fff; margin-bottom: 4px; }
+  .header p { color: #8a958d; font-size: 13px; }
+  
+  .form-group { margin-bottom: 16px; text-align: left; }
+  label { display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #c9f158; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  
+  input, textarea, select { 
+    width: 100%; 
+    padding: 12px; 
+    background: #0f1311; 
+    border: 1px solid #232d28; 
+    color: #fff; 
+    border-radius: 8px; 
+    font-size: 13px; 
+    outline: none;
+  }
+  input:focus, textarea:focus, select:focus { border-color: #c9f158; }
+  textarea { resize: vertical; min-height: 90px; }
+  
+  /* Lock & Pro Styles */
+  .badge-pro {
+    background: #ffb703;
+    color: #000;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 800;
+  }
+  .locked-option {
+    color: #7a887f;
+    background: #121714;
+  }
+
+  .btn-primary { 
+    width: 100%; 
+    padding: 14px; 
+    background: #c9f158; 
+    color: #0c0f0d; 
+    font-weight: 800; 
+    border: none; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 15px; 
+    margin-top: 10px; 
+  }
+  .btn-primary:hover { background: #b8e047; }
+  
+  .btn-prompt { 
+    width: 100%; 
+    padding: 10px; 
+    background: #1c2420; 
+    color: #a3b3a9; 
+    font-weight: 600; 
+    border: 1px solid #2a3630; 
+    border-radius: 8px; 
+    cursor: pointer; 
+    font-size: 12px; 
+    margin-bottom: 16px; 
+  }
 </style>
 </head>
 <body>
+
 <div class="box">
-  <h2>Khan Institute AI Video Automator</h2>
-  <p style="color:#8a958d;">1-Click Script to Video Generator</p>
+  <div class="header">
+    <h2>Khan Institute AI Automator</h2>
+    <p>1-Click Script to Video Generator</p>
+  </div>
   
-  <input type="text" id="server-url" placeholder="Paste Server URL Here">
-  <textarea id="script-input" placeholder="Voice Line || Image Prompt"></textarea>
-  <button onclick="alert('System Ready!')">🚀 START RENDERING</button>
+  <div class="form-group">
+    <label for="server-url">Server Connection URL</label>
+    <input type="text" id="server-url" placeholder="Paste Server URL Here">
+  </div>
+
+  <!-- Human Voice Effect / Audio Enhancer Dropdown -->
+  <div class="form-group">
+    <label for="voiceEffect">
+      🎙️ Voiceover Humanizer & FX 
+      <span class="badge-pro">PREMIUM</span>
+    </label>
+    <select id="voiceEffect" onchange="checkProAccess(this)">
+      <option value="raw">Standard AI Voice (Free)</option>
+      <option value="studio" class="locked-option">🔒 Studio Warmth & Vocal Clarity (Pro)</option>
+      <option value="deep-podcast" class="locked-option">🔒 Deep Dynamic Documentary Voice (Pro)</option>
+      <option value="human-breath" class="locked-option">🔒 Human Breathing & Natural Pauses (Pro)</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="imageEngine">Image Engine</label>
+    <select id="imageEngine">
+      <option value="pollinations-flux" selected>Pollinations AI (Flux 4K Engine)</option>
+      <option value="wikimedia">Wikimedia Commons (Real Photos)</option>
+    </select>
+  </div>
+
+  <div class="form-group">
+    <label for="nicheStyle">Documentary Visual Preset</label>
+    <select id="nicheStyle">
+      <option value="history">📜 History & War (Archival 35mm)</option>
+      <option value="science">🔬 Science & Tech (3D Blueprint)</option>
+      <option value="politics">🏛️ Politics & News (Newsroom)</option>
+      <option value="disaster">💥 Disasters & Engineering (Dramatic FX)</option>
+    </select>
+  </div>
+
+  <button type="button" class="btn-prompt" onclick="copyGeminiPrompt()">📋 Copy Script Generator Prompt</button>
+
+  <div class="form-group">
+    <label for="script-input">Script Input (Voice Line || Image Prompt)</label>
+    <textarea id="script-input" placeholder="Voice Line || Image Prompt"></textarea>
+  </div>
+  
+  <button class="btn-primary" onclick="startRendering()">🚀 START RENDERING</button>
 </div>
+
+<script>
+  let isProUser = false; // اس کو true کرنے پر پیڈ یوزر کے لاک کھل جائیں گے
+
+  function checkProAccess(selectElem) {
+    const selectedValue = selectElem.value;
+    if (selectedValue !== 'raw' && !isProUser) {
+      alert("👑 یہ ہیومن وائس ایفیکٹ صرف PRO / PAID ممبرز کے لیے دستیاب ہے۔ فری ممبرز 'Standard Voice' استعمال کر سکتے ہیں۔");
+      selectElem.value = 'raw'; // واپس فری پر سیٹ کر دے گا
+    }
+  }
+
+  function copyGeminiPrompt() {
+    const promptText = `You are an expert YouTube documentary writer. Generate a script line by line.
+STRICT FORMAT: Voiceover Line || English Image Prompt`;
+    navigator.clipboard.writeText(promptText);
+    alert("Prompt کاپی ہو گیا!");
+  }
+
+  function startRendering() {
+    const script = document.getElementById('script-input').value.trim();
+    if (!script) {
+      alert("براہ کرم اسکرپٹ شامل کریں!");
+      return;
+    }
+    alert("رینڈرنگ پروسیس شروع کیا جا رہا ہے!");
+  }
+</script>
+
 </body>
 </html>
