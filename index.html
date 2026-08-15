@@ -69,7 +69,7 @@
     </div>
     <div class="col form-group">
       <label>🔑 Pro Access Password <span class="pro-badge">PRO</span></label>
-      <input type="password" id="proPassword" placeholder="Enter Pro Password for Pro Features">
+      <input type="password" id="proPassword" placeholder="Enter Password for Pro Features">
     </div>
   </div>
 
@@ -95,10 +95,10 @@
     </div>
   </div>
 
-  <!-- Custom BGM Upload & Sound FX -->
-  <span class="section-title">3. BGM Upload & Transition SFX</span>
+  <!-- Standard Custom BGM Upload & Pro Sound FX -->
+  <span class="section-title">3. Custom BGM & Transition SFX</span>
   <div class="form-group">
-    <label>🎵 Upload Custom Background Music (MP3) <span class="pro-badge">PRO 🔑</span></label>
+    <label>🎵 Upload Custom Background Music (MP3) (Free)</label>
     <input type="file" id="bgmFile" accept="audio/*">
   </div>
 
@@ -170,17 +170,16 @@
     if(!serverUrl) { alert("سرور URL درج کریں!"); return; }
     if(!script) { alert("اسکرپٹ درج کریں!"); return; }
 
-    // Pro Feature Lock Verification
+    // BGM upload is removed from Pro verification rule
     const isProFeatureUsed = (
       captionStyle.includes('capcut') || captionStyle.includes('tiktok') ||
-      bgmFileInput.files.length > 0 ||
       sfxMode !== 'none' ||
       cameraMotion !== 'static' ||
       voiceEmotion !== 'none'
     );
 
     if(isProFeatureUsed && !password) {
-      alert("🔒 آپ پرو فیچرز (Custom BGM, CapCut Captions, SFX) استعمال کر رہے ہیں۔ براہ کرم پہلے Pro Access Password درج کریں!");
+      alert("🔒 آپ پرو فیچرز (CapCut Captions, SFX, Camera Motion, Humanizer) استعمال کر رہے ہیں۔ براہ کرم Pro Access Password درج کریں!");
       return;
     }
     
