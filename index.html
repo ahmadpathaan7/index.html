@@ -27,62 +27,77 @@
 </head>
 <body>
   <div class="container">
-    <h2>🚀 Khan Studio</h2>
+    <h2>🚀 Khan Automation Studio</h2>
     
-    <label>🔍 Check Status by ID:</label>
+    <!-- Status Checker Section -->
+    <label>🔍 Check Status by Job ID:</label>
     <div class="pass-group">
-      <input type="text" id="checkJobId" placeholder="Enter Job ID">
-      <button class="check-btn" onclick="checkJobStatus()">Check</button>
+      <input type="text" id="checkJobId" placeholder="Enter Job ID (e.g. 621695)">
+      <button class="check-btn" onclick="checkJobStatus()">Check Status</button>
     </div>
 
     <hr>
 
+    <!-- Password Unlock System -->
     <label>🔑 Pro Access Password:</label>
     <div class="pass-group">
-      <input type="password" id="proPassword" placeholder="Enter Password">
-      <button class="unlock-btn" onclick="verifyPassword()">Unlock</button>
+      <input type="password" id="proPassword" placeholder="Enter Pro Password">
+      <button class="unlock-btn" onclick="verifyPassword()">Unlock Pro</button>
     </div>
     <div id="passStatus" class="status-msg"></div>
 
-    <label>Visual Style:</label>
+    <!-- Visual Settings -->
+    <label>1. VISUAL STYLE</label>
     <select id="visualStyle">
       <option value="cinematic-doc">Cinematic Documentary</option>
       <option value="hyper-real">Hyper Realistic</option>
     </select>
 
-    <label>Caption Style <span class="pro-tag">🔒 PRO</span>:</label>
+    <!-- Voiceover & Language Settings -->
+    <label>2. VOICEOVER & GENDER</label>
+    <select id="voiceGender">
+      <option value="male-standard">👨 Standard Urdu Male</option>
+      <option value="female-standard">👩 Standard Urdu Female</option>
+    </select>
+
+    <label>Emotion & Voice Humanizer <span class="pro-tag">🔒 PRO</span>:</label>
+    <select id="voiceEmotion" disabled>
+      <option value="none">Standard Pitch & Tone</option>
+      <option value="dramatic">Deep Dramatic Documentary (PRO)</option>
+    </select>
+
+    <!-- Video Effects & Captions -->
+    <label>3. CAPTION & MOTION EFFECTS</label>
+    <label style="margin-top:2px;">Caption Style <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="captionStyle" disabled>
-      <option value="clean-sub">Standard Subtitles</option>
-      <option value="capcut-yellow">Dynamic Yellow (Pro)</option>
+      <option value="clean-sub">Standard Cinema Subtitles</option>
+      <option value="capcut-yellow">CapCut Dynamic Yellow (PRO)</option>
     </select>
 
-    <label>Scene Transition <span class="pro-tag">🔒 PRO</span>:</label>
-    <select id="sfxMode" disabled>
-      <option value="none">No Transition</option>
-      <option value="whoosh">Auto Whooshes (Pro)</option>
-    </select>
-
-    <label>Camera Motion <span class="pro-tag">🔒 PRO</span>:</label>
+    <label style="margin-top:5px;">Camera Motion <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="cameraMotion" disabled>
       <option value="static">Static Image</option>
-      <option value="ken-burns">Dynamic Zoom (Pro)</option>
+      <option value="ken-burns">Dynamic Ken Burns Zoom (PRO)</option>
     </select>
 
-    <label>Voice Emotion <span class="pro-tag">🔒 PRO</span>:</label>
-    <select id="voiceEmotion" disabled>
-      <option value="none">Standard Voice</option>
-      <option value="dramatic">Deep Dramatic (Pro)</option>
+    <!-- Audio & Transitions -->
+    <label>4. MUSIC & SOUND EFFECTS</label>
+    <label style="margin-top:2px;">Scene Transition SFX <span class="pro-tag">🔒 PRO</span>:</label>
+    <select id="sfxMode" disabled>
+      <option value="none">No Transition SFX</option>
+      <option value="whoosh">Auto Whooshes on Scene (PRO)</option>
     </select>
 
-    <label>Background Music (MP3):</label>
+    <label style="margin-top:5px;">🎵 Upload Custom Background Music (MP3):</label>
     <input type="file" id="bgmFile" accept="audio/*">
 
-    <label>Script Input (Voice Line || Image Prompt):</label>
-    <textarea id="scriptInput" placeholder="یہ کہانی ہے... || A dramatic shot..."></textarea>
+    <!-- Script Input -->
+    <label>5. SCRIPT INPUT</label>
+    <textarea id="scriptInput" placeholder="یہ کہانی ہے... || A dramatic shot of..."></textarea>
 
-    <button class="gen-btn" onclick="startRender()">🚀 GENERATE VIDEO</button>
+    <button class="gen-btn" onclick="startRender()">🚀 GENERATE AUTOMATED VIDEO</button>
 
-    <!-- LIVE STATUS AREA -->
+    <!-- Status & Download Area -->
     <div id="statusArea">
       <div id="statusText">Processing...</div>
     </div>
@@ -96,7 +111,6 @@
       const textDiv = document.getElementById('statusText');
       area.style.display = "block";
       textDiv.innerHTML = text;
-      
       if(showDownload) {
         textDiv.innerHTML += `<br><a href="${url}" class="download-link" target="_blank">⬇️ Download Video</a>`;
       }
@@ -107,12 +121,15 @@
       const statusDiv = document.getElementById('passStatus');
       if (pass === "khan_pro_automation") {
         statusDiv.style.color = "#4ade80";
-        statusDiv.innerText = "✅ Unlocked.";
+        statusDiv.innerText = "✅ Password Correct! Pro Features Unlocked.";
         document.getElementById('captionStyle').disabled = false;
         document.getElementById('sfxMode').disabled = false;
         document.getElementById('cameraMotion').disabled = false;
         document.getElementById('voiceEmotion').disabled = false;
-        document.querySelectorAll('.pro-tag').forEach(tag => tag.innerText = "🔓 UNLOCKED");
+        document.querySelectorAll('.pro-tag').forEach(tag => {
+          tag.innerText = "🔓 UNLOCKED";
+          tag.style.color = "#4ade80";
+        });
       } else {
         statusDiv.style.color = "#f87171";
         statusDiv.innerText = "❌ Incorrect Password!";
@@ -122,9 +139,7 @@
     async function checkJobStatus() {
       const jobId = document.getElementById('checkJobId').value.trim();
       if(!jobId) { alert("Job ID درج کریں!"); return; }
-      
-      showStatus("⏳ Checking status for ID: " + jobId);
-      
+      showStatus("⏳ Checking status for Job ID: " + jobId);
       try {
         const res = await fetch(`${serverUrl}/status/${jobId}`);
         const result = await res.json();
@@ -133,9 +148,9 @@
         } else if(result.status === "processing") {
           showStatus("⏳ ویڈیو ابھی بن رہی ہے، تھوڑی دیر میں دوبارہ چیک کریں۔");
         } else {
-          showStatus("❌ ID درست نہیں ہے یا پروسیسنگ ناکام ہو گئی۔");
+          showStatus("❌ Job ID درست نہیں ہے یا پروسیسنگ میں ایرر آیا۔");
         }
-      } catch(e) { showStatus("❌ سرور سے رابطہ نہیں ہو رہا۔"); }
+      } catch(e) { showStatus("❌ سرور سے رابطہ نہیں ہو پا رہا۔"); }
     }
 
     async function startRender() {
@@ -146,25 +161,26 @@
       formData.append('password', document.getElementById('proPassword').value.trim());
       formData.append('script', script);
       formData.append('visualStyle', document.getElementById('visualStyle').value);
+      formData.append('voiceGender', document.getElementById('voiceGender').value);
+      formData.append('voiceEmotion', document.getElementById('voiceEmotion').value);
       formData.append('captionStyle', document.getElementById('captionStyle').value);
       formData.append('sfxMode', document.getElementById('sfxMode').value);
       formData.append('cameraMotion', document.getElementById('cameraMotion').value);
-      formData.append('voiceEmotion', document.getElementById('voiceEmotion').value);
 
       const bgm = document.getElementById('bgmFile').files[0];
       if(bgm) formData.append('bgmFile', bgm);
 
-      showStatus("🚀 جنریشن شروع ہو گئی ہے۔۔۔");
+      showStatus("🚀 ویڈیو ریکویسٹ پروسیس ہو رہی ہے۔۔۔");
 
       try {
         const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
         const data = await response.json();
         if(response.ok) {
-          showStatus("✅ کام شروع ہو چکا ہے! Job ID: " + data.job_id + "<br>اس ID کو محفوظ رکھیں اور تھوڑی دیر بعد اوپر چیک کریں.");
+          showStatus("✅ جنریشن شروع ہو چکی ہے!<br><b>Job ID: " + data.job_id + "</b><br>اس ID کو کاپی کر کے محفوظ رکھ لیں، موبائل بند ہونے پر بھی اوپر سرچ سے ویڈیو مل جائے گی۔");
         } else {
-          showStatus("❌ " + (data.detail || "کوئی مسئلہ پیش آیا۔"));
+          showStatus("❌ " + (data.detail || "پروسیسنگ میں مسئلہ آیا۔"));
         }
-      } catch (err) { showStatus("❌ سرور سے کنکشن نہیں ہو سکا۔"); }
+      } catch (err) { showStatus("❌ سرور کنکشن کا مسئلہ ہے۔ Check کریں Render آن ہے؟"); }
     }
   </script>
 </body>
