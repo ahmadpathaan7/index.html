@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Khan Studio AI Automation</title>
+  <title>Khan Studio AI</title>
   <style>
     body { background-color: #121212; color: #ffffff; font-family: sans-serif; padding: 15px; text-align: center; }
     .container { max-width: 500px; margin: 0 auto; background: #1e1e1e; padding: 20px; border-radius: 12px; border: 1px solid #333; }
@@ -13,55 +13,65 @@
     .pass-group { display: flex; gap: 8px; margin-top: 5px; }
     .pass-group input { flex: 1; margin-top: 0; }
     .unlock-btn { width: 35%; margin-top: 0; background-color: #3b82f6; color: #fff; border: none; font-weight: bold; cursor: pointer; }
+    .check-btn { width: 35%; margin-top: 0; background-color: #a855f7; color: #fff; border: none; font-weight: bold; cursor: pointer; }
     
     button.gen-btn { background-color: #9ecc3b; color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; border: none; }
+    #statusArea { margin-top: 20px; padding: 15px; background: #2a2a2a; border-radius: 8px; display: none; }
+    .download-link { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #9ecc3b; color: #000; text-decoration: none; font-weight: bold; border-radius: 6px; }
+    
     textarea { height: 100px; resize: vertical; }
     .pro-tag { color: #eab308; font-size: 11px; float: right; font-weight: bold; }
     .status-msg { font-size: 12px; text-align: left; margin-top: 4px; font-weight: bold; }
+    hr { border: 0; height: 1px; background: #333; margin: 20px 0; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2>🚀 Khan Automation Studio</h2>
+    <h2>🚀 Khan Studio</h2>
     
-    <label>Server URL:</label>
-    <input type="text" id="serverUrl" value="https://khan-yt-backend.onrender.com">
+    <label>🔍 Check Status by ID:</label>
+    <div class="pass-group">
+      <input type="text" id="checkJobId" placeholder="Enter Job ID">
+      <button class="check-btn" onclick="checkJobStatus()">Check</button>
+    </div>
+
+    <hr>
 
     <label>🔑 Pro Access Password:</label>
     <div class="pass-group">
-      <input type="password" id="proPassword" placeholder="Enter Pro Password">
-      <button class="unlock-btn" onclick="verifyPassword()">Unlock Pro</button>
+      <input type="password" id="proPassword" placeholder="Enter Password">
+      <button class="unlock-btn" onclick="verifyPassword()">Unlock</button>
     </div>
     <div id="passStatus" class="status-msg"></div>
 
     <label>Visual Style:</label>
     <select id="visualStyle">
-      <option value="cinematic-doc">Cinematic Documentary (Free)</option>
-      <option value="hyper-real">Hyper Realistic (Free)</option>
+      <option value="cinematic-doc">Cinematic Documentary</option>
+      <option value="hyper-real">Hyper Realistic</option>
     </select>
 
     <label>Caption Style <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="captionStyle" disabled>
-      <option value="clean-sub">Standard Cinema Subtitles (Free)</option>
-      <option value="capcut-yellow">CapCut Dynamic Yellow (PRO)</option>
+      <option value="clean-sub">Standard Subtitles</option>
+      <option value="capcut-yellow">Dynamic Yellow (Pro)</option>
     </select>
 
-    <label>Scene Transition SFX <span class="pro-tag">🔒 PRO</span>:</label>
+    <label>Scene Transition <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="sfxMode" disabled>
-      <option value="none">No Transition SFX (Free)</option>
-      <option value="whoosh">Auto Whooshes on Scene (PRO)</option>
+      <option value="none">No Transition</option>
+      <option value="whoosh">Auto Whooshes (Pro)</option>
     </select>
 
     <label>Camera Motion <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="cameraMotion" disabled>
-      <option value="static">Static Image (Free)</option>
-      <option value="ken-burns">Dynamic Ken Burns Zoom (PRO)</option>
+      <option value="static">Static Image</option>
+      <option value="ken-burns">Dynamic Zoom (Pro)</option>
     </select>
 
-    <label>Emotion & Humanizer <span class="pro-tag">🔒 PRO</span>:</label>
+    <label>Voice Emotion <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="voiceEmotion" disabled>
-      <option value="none">Standard Pitch & Tone (Free)</option>
-      <option value="dramatic">Deep Dramatic Documentary (PRO)</option>
+      <option value="none">Standard Voice</option>
+      <option value="dramatic">Deep Dramatic (Pro)</option>
     </select>
 
     <label>Background Music (MP3):</label>
@@ -70,100 +80,91 @@
     <label>Script Input (Voice Line || Image Prompt):</label>
     <textarea id="scriptInput" placeholder="یہ کہانی ہے... || A dramatic shot..."></textarea>
 
-    <button class="gen-btn" onclick="startRender()">🚀 GENERATE AUTOMATED VIDEO</button>
+    <button class="gen-btn" onclick="startRender()">🚀 GENERATE VIDEO</button>
+
+    <!-- LIVE STATUS AREA -->
+    <div id="statusArea">
+      <div id="statusText">Processing...</div>
+    </div>
   </div>
 
   <script>
-    let isProUnlocked = false;
+    const serverUrl = "https://khan-yt-backend.onrender.com";
+
+    function showStatus(text, showDownload = false, url = "") {
+      const area = document.getElementById('statusArea');
+      const textDiv = document.getElementById('statusText');
+      area.style.display = "block";
+      textDiv.innerHTML = text;
+      
+      if(showDownload) {
+        textDiv.innerHTML += `<br><a href="${url}" class="download-link" target="_blank">⬇️ Download Video</a>`;
+      }
+    }
 
     function verifyPassword() {
       const pass = document.getElementById('proPassword').value.trim();
       const statusDiv = document.getElementById('passStatus');
-
       if (pass === "khan_pro_automation") {
-        isProUnlocked = true;
         statusDiv.style.color = "#4ade80";
-        statusDiv.innerText = "✅ Correct Password! Pro Features Unlocked.";
-
-        // Enable Pro Options
+        statusDiv.innerText = "✅ Unlocked.";
         document.getElementById('captionStyle').disabled = false;
         document.getElementById('sfxMode').disabled = false;
         document.getElementById('cameraMotion').disabled = false;
         document.getElementById('voiceEmotion').disabled = false;
-
-        // Change Pro tags style
-        document.querySelectorAll('.pro-tag').forEach(tag => {
-          tag.innerText = "🔓 UNLOCKED";
-          tag.style.color = "#4ade80";
-        });
+        document.querySelectorAll('.pro-tag').forEach(tag => tag.innerText = "🔓 UNLOCKED");
       } else {
-        isProUnlocked = false;
         statusDiv.style.color = "#f87171";
         statusDiv.innerText = "❌ Incorrect Password!";
       }
     }
 
-    async function startRender() {
-      const serverUrl = document.getElementById('serverUrl').value.trim();
-      const password = document.getElementById('proPassword').value.trim();
-      const visualStyle = document.getElementById('visualStyle').value;
-      const captionStyle = document.getElementById('captionStyle').value;
-      const sfxMode = document.getElementById('sfxMode').value;
-      const cameraMotion = document.getElementById('cameraMotion').value;
-      const voiceEmotion = document.getElementById('voiceEmotion').value;
-      const bgmFileInput = document.getElementById('bgmFile');
-      const script = document.getElementById('scriptInput').value.trim();
+    async function checkJobStatus() {
+      const jobId = document.getElementById('checkJobId').value.trim();
+      if(!jobId) { alert("Job ID درج کریں!"); return; }
       
-      if(!serverUrl) { alert("سرور URL درج کریں!"); return; }
+      showStatus("⏳ Checking status for ID: " + jobId);
+      
+      try {
+        const res = await fetch(`${serverUrl}/status/${jobId}`);
+        const result = await res.json();
+        if(result.status === "completed") {
+          showStatus("🎉 ویڈیو تیار ہے!", true, `${serverUrl}${result.video_url}`);
+        } else if(result.status === "processing") {
+          showStatus("⏳ ویڈیو ابھی بن رہی ہے، تھوڑی دیر میں دوبارہ چیک کریں۔");
+        } else {
+          showStatus("❌ ID درست نہیں ہے یا پروسیسنگ ناکام ہو گئی۔");
+        }
+      } catch(e) { showStatus("❌ سرور سے رابطہ نہیں ہو رہا۔"); }
+    }
+
+    async function startRender() {
+      const script = document.getElementById('scriptInput').value.trim();
       if(!script) { alert("اسکرپٹ درج کریں!"); return; }
 
       const formData = new FormData();
-      formData.append('password', password);
+      formData.append('password', document.getElementById('proPassword').value.trim());
       formData.append('script', script);
-      formData.append('visualStyle', visualStyle);
-      formData.append('captionStyle', captionStyle);
-      formData.append('sfxMode', sfxMode);
-      formData.append('cameraMotion', cameraMotion);
-      formData.append('voiceEmotion', voiceEmotion);
+      formData.append('visualStyle', document.getElementById('visualStyle').value);
+      formData.append('captionStyle', document.getElementById('captionStyle').value);
+      formData.append('sfxMode', document.getElementById('sfxMode').value);
+      formData.append('cameraMotion', document.getElementById('cameraMotion').value);
+      formData.append('voiceEmotion', document.getElementById('voiceEmotion').value);
 
-      if(bgmFileInput.files.length > 0) {
-        formData.append('bgmFile', bgmFileInput.files[0]);
-      }
+      const bgm = document.getElementById('bgmFile').files[0];
+      if(bgm) formData.append('bgmFile', bgm);
+
+      showStatus("🚀 جنریشن شروع ہو گئی ہے۔۔۔");
 
       try {
         const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
         const data = await response.json();
-        
         if(response.ok) {
-          alert("🚀 ویڈیو پروسیسنگ شروع ہو گئی ہے! Job ID: " + data.job_id);
-          pollStatus(serverUrl, data.job_id);
+          showStatus("✅ کام شروع ہو چکا ہے! Job ID: " + data.job_id + "<br>اس ID کو محفوظ رکھیں اور تھوڑی دیر بعد اوپر چیک کریں.");
         } else {
-          alert("❌ " + (data.detail || "ریکویسٹ ریجیکٹ ہو گئی!"));
+          showStatus("❌ " + (data.detail || "کوئی مسئلہ پیش آیا۔"));
         }
-      } catch (err) {
-        alert("❌ سرور سے کنکشن نہیں ہو سکا۔");
-      }
-    }
-
-    async function pollStatus(serverUrl, jobId) {
-      const interval = setInterval(async () => {
-        try {
-          const res = await fetch(`${serverUrl}/status/${jobId}`);
-          const result = await res.json();
-          
-          if(result.status === "completed") {
-            clearInterval(interval);
-            const fullVideoUrl = `${serverUrl}${result.video_url}`;
-            alert("🎉 ویڈیو تیار ہے!");
-            window.open(fullVideoUrl, '_blank');
-          } else if(result.status === "failed") {
-            clearInterval(interval);
-            alert("❌ ایرر: " + result.error);
-          }
-        } catch (e) {
-          console.log("Waiting...");
-        }
-      }, 10000);
+      } catch (err) { showStatus("❌ سرور سے کنکشن نہیں ہو سکا۔"); }
     }
   </script>
 </body>
