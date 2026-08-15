@@ -46,11 +46,18 @@
     </div>
     <div id="passStatus" class="status-msg"></div>
 
-    <!-- Visual Settings -->
-    <label>1. VISUAL STYLE</label>
+    <!-- Visual Settings & Image Sources -->
+    <label>1. VISUAL STYLE & IMAGE ENGINE</label>
     <select id="visualStyle">
       <option value="cinematic-doc">Cinematic Documentary</option>
       <option value="hyper-real">Hyper Realistic</option>
+    </select>
+
+    <label style="margin-top:5px;">Image Generation Engine <span class="pro-tag">🔒 PRO</span>:</label>
+    <select id="imageEngine" disabled>
+      <option value="standard-web">Wikipedia / Web Sourced Images (Free)</option>
+      <option value="flux-ai">🎨 Flux AI High-Quality Image Gen (PRO)</option>
+      <option value="hybrid-flux">⚡ Hybrid (Flux AI + Wikipedia Real Images) (PRO)</option>
     </select>
 
     <!-- Voiceover & Language Settings -->
@@ -60,7 +67,7 @@
       <option value="female-standard">👩 Standard Urdu Female</option>
     </select>
 
-    <label>Emotion & Voice Humanizer <span class="pro-tag">🔒 PRO</span>:</label>
+    <label style="margin-top:5px;">Emotion & Voice Humanizer <span class="pro-tag">🔒 PRO</span>:</label>
     <select id="voiceEmotion" disabled>
       <option value="none">Standard Pitch & Tone</option>
       <option value="dramatic">Deep Dramatic Documentary (PRO)</option>
@@ -122,6 +129,7 @@
       if (pass === "khan_pro_automation") {
         statusDiv.style.color = "#4ade80";
         statusDiv.innerText = "✅ Password Correct! Pro Features Unlocked.";
+        document.getElementById('imageEngine').disabled = false;
         document.getElementById('captionStyle').disabled = false;
         document.getElementById('sfxMode').disabled = false;
         document.getElementById('cameraMotion').disabled = false;
@@ -161,6 +169,7 @@
       formData.append('password', document.getElementById('proPassword').value.trim());
       formData.append('script', script);
       formData.append('visualStyle', document.getElementById('visualStyle').value);
+      formData.append('imageEngine', document.getElementById('imageEngine').value);
       formData.append('voiceGender', document.getElementById('voiceGender').value);
       formData.append('voiceEmotion', document.getElementById('voiceEmotion').value);
       formData.append('captionStyle', document.getElementById('captionStyle').value);
