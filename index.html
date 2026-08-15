@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khan Institute YT Automation (Power Mode)</title>
+<title>Khan Institute YT Automation (Power Mode Ultimate)</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { 
@@ -55,7 +55,7 @@
 <div class="box">
   <div class="header">
     <h2>Khan Institute YT Automation</h2>
-    <p>Power Mode — AI Video Studio</p>
+    <p>Power Mode Ultimate — AI Video Studio</p>
   </div>
 
   <!-- Server Link & Pro Password -->
@@ -63,16 +63,16 @@
   <div class="row">
     <div class="col form-group">
       <label>🔗 Render Server URL</label>
-      <input type="text" id="serverUrl" value="https://khan-yt-backend.onrender.com" placeholder="https://khan-yt-backend.onrender.com">
+      <input type="text" id="serverUrl" value="https://khan-yt-backend.onrender.com">
     </div>
     <div class="col form-group">
       <label>🔑 Pro Access Password</label>
-      <input type="password" id="proPassword" value="khan_pro_automation" placeholder="Enter Pro Password">
+      <input type="password" id="proPassword" placeholder="Enter Pro Password">
     </div>
   </div>
 
-  <!-- Visual Style & Mixed Scene Sources -->
-  <span class="section-title">2. Visuals & Engine</span>
+  <!-- Visual Style & Captions -->
+  <span class="section-title">2. Visual Engine & Captions</span>
   <div class="row">
     <div class="col form-group">
       <label>🎨 Visual Style Preset</label>
@@ -85,42 +85,100 @@
       </select>
     </div>
     <div class="col form-group">
-      <label>🖼️ Scene Source</label>
-      <select id="sceneSource">
-        <option value="flux">Flux AI Only (100% Generated)</option>
-        <option value="mixed">Mixed (Max 3 Wiki Photos + Flux)</option>
+      <label>💬 Smart Auto-Captions</label>
+      <select id="captionStyle">
+        <option value="capcut-yellow">CapCut Style (Yellow Highlight)</option>
+        <option value="tiktok-bold">TikTok Bold Pop-up</option>
+        <option value="clean-sub">Clean Cinema Subtitles</option>
+        <option value="off">Disable Captions</option>
       </select>
     </div>
   </div>
 
-  <!-- Character Consistency & Audio Controls -->
-  <span class="section-title">3. Character & Audio Controls</span>
-  <div class="form-group">
-    <label>🤖 Consistent Character Prompt (Optional)</label>
-    <input type="text" id="characterPrompt" placeholder="e.g. Young male engineer with black glasses, brown leather jacket...">
+  <!-- BGM Audio Mixing & FX -->
+  <span class="section-title">3. BGM Auto-Mixing & Sound FX</span>
+  <div class="row">
+    <div class="col form-group">
+      <label>🎵 Background Music (BGM Track)</label>
+      <select id="bgmTrack">
+        <option value="suspense-mystery">Dark Suspense & Mystery</option>
+        <option value="dramatic-history">Dramatic Historical Beat</option>
+        <option value="energetic-hype">High Energy / Tech Hype</option>
+        <option value="calm-ambient">Calm Ambient Focus</option>
+        <option value="none">No Background Music</option>
+      </select>
+    </div>
+    <div class="col form-group">
+      <label>🎚️ Auto-Ducking (BGM Balance)</label>
+      <select id="bgmDucking">
+        <option value="auto-80">Smart Ducking (-80% during Voice)</option>
+        <option value="auto-60">Medium Ducking (-60% during Voice)</option>
+        <option value="off">Constant Volume (No Ducking)</option>
+      </select>
+    </div>
   </div>
 
   <div class="row">
     <div class="col form-group">
-      <label>🎙️ Voiceover Voice & Gender</label>
+      <label>🔊 Sound FX Transitions</label>
+      <select id="sfxMode">
+        <option value="whoosh-impact">Whooshes + Deep Riser SFX</option>
+        <option value="subtle-cinematic">Subtle Cinematic Hits</option>
+        <option value="none">No Sound FX</option>
+      </select>
+    </div>
+    <div class="col form-group">
+      <label>🎥 Camera Motion</label>
+      <select id="cameraMotion">
+        <option value="ken-burns">Ken Burns (Dynamic Zoom In/Out)</option>
+        <option value="pan-right">Slow Dynamic Pan</option>
+        <option value="static">Static (No Motion)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Audio Voice Controls -->
+  <span class="section-title">4. Humanized Voice Controls</span>
+  <div class="row">
+    <div class="col form-group">
+      <label>🎙️ Voice Model</label>
       <select id="voiceGender">
-        <option value="male-deep">👨 Urdu Male (Deep Documentary)</option>
-        <option value="female-calm">👩 Urdu Female (Calm Storyteller)</option>
+        <option value="male-deep">👨 Urdu Male (Deep Doc Voice)</option>
+        <option value="female-calm">👩 Urdu Female (Storyteller)</option>
         <option value="male-energetic">👨 English Male (Energetic)</option>
         <option value="female-dramatic">👩 English Female (Dramatic)</option>
       </select>
     </div>
     <div class="col form-group">
-      <label>✂️ Voiceover Silence Trim</label>
+      <label>✂️ Silence Trim</label>
       <select id="silenceTrim">
-        <option value="auto">Auto-Remove Silence (Fast Pace)</option>
-        <option value="none">Keep Original Audio Pauses</option>
+        <option value="auto">Auto-Remove Pauses (Fast Pace)</option>
+        <option value="none">Keep Natural Pauses</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col form-group">
+      <label>🎚️ Pitch Modulation</label>
+      <select id="voicePitch">
+        <option value="+0Hz">Natural Pitch</option>
+        <option value="-5Hz">Deep Radio Voice (-5Hz)</option>
+        <option value="+4Hz">Soft Accent (+4Hz)</option>
+      </select>
+    </div>
+    <div class="col form-group">
+      <label>⚡ Pace & Speed</label>
+      <select id="voiceRate">
+        <option value="+0%">Normal Rate</option>
+        <option value="+10%">Dynamic Fast (+10%)</option>
+        <option value="-8%">Dramatic Slow (-8%)</option>
       </select>
     </div>
   </div>
 
   <!-- Script Input -->
-  <span class="section-title">4. Script Input</span>
+  <span class="section-title">5. Script Input</span>
   <div class="form-group">
     <label>📝 Script (Voice Line || Image Prompt)</label>
     <textarea id="scriptInput" placeholder="Voice Line || Image Prompt"></textarea>
@@ -138,44 +196,45 @@
     const serverUrl = document.getElementById('serverUrl').value.trim();
     const password = document.getElementById('proPassword').value.trim();
     const visualStyle = document.getElementById('visualStyle').value;
-    const sceneSource = document.getElementById('sceneSource').value;
-    const characterPrompt = document.getElementById('characterPrompt').value.trim();
+    const captionStyle = document.getElementById('captionStyle').value;
+    const bgmTrack = document.getElementById('bgmTrack').value;
+    const bgmDucking = document.getElementById('bgmDucking').value;
+    const sfxMode = document.getElementById('sfxMode').value;
+    const cameraMotion = document.getElementById('cameraMotion').value;
     const voiceGender = document.getElementById('voiceGender').value;
     const silenceTrim = document.getElementById('silenceTrim').value;
+    const voicePitch = document.getElementById('voicePitch').value;
+    const voiceRate = document.getElementById('voiceRate').value;
     const script = document.getElementById('scriptInput').value.trim();
     
-    if(!serverUrl) {
-      alert("براہ کرم سرور URL داخل کریں!");
-      return;
-    }
-    if(!script) {
-      alert("براہ کرم اسکرپٹ داخل کریں!");
-      return;
-    }
+    if(!serverUrl) { alert("سرور URL درج کریں!"); return; }
+    if(!password) { alert("پرو پاسورڈ داخل کرنا لازمی ہے!"); return; }
+    if(!script) { alert("اسکرپٹ درج کریں!"); return; }
     
     const formData = new FormData();
     formData.append('password', password);
     formData.append('script', script);
     formData.append('visualStyle', visualStyle);
-    formData.append('sceneSource', sceneSource);
-    formData.append('characterPrompt', characterPrompt);
+    formData.append('captionStyle', captionStyle);
+    formData.append('bgmTrack', bgmTrack);
+    formData.append('bgmDucking', bgmDucking);
+    formData.append('sfxMode', sfxMode);
+    formData.append('cameraMotion', cameraMotion);
     formData.append('silenceTrim', silenceTrim);
     formData.append('voiceGender', voiceGender);
+    formData.append('voicePitch', voicePitch);
+    formData.append('voiceRate', voiceRate);
 
     try {
-      const response = await fetch(`${serverUrl}/render`, {
-        method: 'POST',
-        body: formData
-      });
-      
+      const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
       const data = await response.json();
       if(response.ok) {
-        alert("🚀 رینڈرنگ کمانڈ کلاؤڈ سرور کو بھیج دی گئی ہے! جاب ID: " + data.job_id);
+        alert("🚀 آٹو مکسنگ ویڈیو پروسیسنگ شروع ہو گئی ہے! جاب ID: " + data.job_id);
       } else {
-        alert("❌ ایرر: " + (data.detail || "سرور سے رابطہ نہیں ہو سکا!"));
+        alert("❌ ایرر: " + (data.detail || "غلط پاسورڈ یا سرور ایشو!"));
       }
     } catch (err) {
-      alert("❌ سرور کنکشن ناکام! چیک کریں کہ Render سرور آن ہے۔");
+      alert("❌ سرور سے کنکشن قائم نہیں ہو سکا۔ چیک کریں کہ Render سرور آن ہے۔");
     }
   }
 </script>
