@@ -63,11 +63,11 @@
   <div class="row">
     <div class="col form-group">
       <label>🔗 Render Server URL</label>
-      <input type="text" id="serverUrl" placeholder="https://khan-yt-backend.onrender.com">
+      <input type="text" id="serverUrl" value="https://khan-yt-backend.onrender.com" placeholder="https://khan-yt-backend.onrender.com">
     </div>
     <div class="col form-group">
       <label>🔑 Pro Access Password</label>
-      <input type="password" id="proPassword" placeholder="Enter Pro Password">
+      <input type="password" id="proPassword" value="khan_pro_automation" placeholder="Enter Pro Password">
     </div>
   </div>
 
@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <!-- Character Consistency & Audio Processing -->
+  <!-- Character Consistency & Audio Controls -->
   <span class="section-title">3. Character & Audio Controls</span>
   <div class="form-group">
     <label>🤖 Consistent Character Prompt (Optional)</label>
@@ -102,17 +102,19 @@
 
   <div class="row">
     <div class="col form-group">
+      <label>🎙️ Voiceover Voice & Gender</label>
+      <select id="voiceGender">
+        <option value="male-deep">👨 Urdu Male (Deep Documentary)</option>
+        <option value="female-calm">👩 Urdu Female (Calm Storyteller)</option>
+        <option value="male-energetic">👨 English Male (Energetic)</option>
+        <option value="female-dramatic">👩 English Female (Dramatic)</option>
+      </select>
+    </div>
+    <div class="col form-group">
       <label>✂️ Voiceover Silence Trim</label>
       <select id="silenceTrim">
         <option value="auto">Auto-Remove Silence (Fast Pace)</option>
         <option value="none">Keep Original Audio Pauses</option>
-      </select>
-    </div>
-    <div class="col form-group">
-      <label>🎵 BGM Auto-Ducking</label>
-      <select id="bgmMode">
-        <option value="auto-duck">Auto-Lower BGM during Voiceover</option>
-        <option value="custom">Custom Audio Sync</option>
       </select>
     </div>
   </div>
@@ -132,16 +134,49 @@
 </div>
 
 <script>
-  function startRender() {
+  async function startRender() {
     const serverUrl = document.getElementById('serverUrl').value.trim();
+    const password = document.getElementById('proPassword').value.trim();
+    const visualStyle = document.getElementById('visualStyle').value;
+    const sceneSource = document.getElementById('sceneSource').value;
+    const characterPrompt = document.getElementById('characterPrompt').value.trim();
+    const voiceGender = document.getElementById('voiceGender').value;
+    const silenceTrim = document.getElementById('silenceTrim').value;
     const script = document.getElementById('scriptInput').value.trim();
     
+    if(!serverUrl) {
+      alert("براہ کرم سرور URL داخل کریں!");
+      return;
+    }
     if(!script) {
       alert("براہ کرم اسکرپٹ داخل کریں!");
       return;
     }
     
-    alert("رینڈرنگ کمانڈ کلاؤڈ سرور کو بھیج دی گئی ہے! آپ اب براؤزر بند کر سکتے ہیں۔");
+    const formData = new FormData();
+    formData.append('password', password);
+    formData.append('script', script);
+    formData.append('visualStyle', visualStyle);
+    formData.append('sceneSource', sceneSource);
+    formData.append('characterPrompt', characterPrompt);
+    formData.append('silenceTrim', silenceTrim);
+    formData.append('voiceGender', voiceGender);
+
+    try {
+      const response = await fetch(`${serverUrl}/render`, {
+        method: 'POST',
+        body: formData
+      });
+      
+      const data = await response.json();
+      if(response.ok) {
+        alert("🚀 رینڈرنگ کمانڈ کلاؤڈ سرور کو بھیج دی گئی ہے! جاب ID: " + data.job_id);
+      } else {
+        alert("❌ ایرر: " + (data.detail || "سرور سے رابطہ نہیں ہو سکا!"));
+      }
+    } catch (err) {
+      alert("❌ سرور کنکشن ناکام! چیک کریں کہ Render سرور آن ہے۔");
+    }
   }
 </script>
 
