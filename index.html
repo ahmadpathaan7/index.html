@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Khan Institute YT Automation (Power Mode Ultimate)</title>
+<title>Khan Institute YT Automation (Free & Pro Studio)</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { 
@@ -33,6 +33,8 @@
   .section-title { font-size: 12px; color: #c9f158; font-weight: 700; text-transform: uppercase; margin: 18px 0 10px 0; display: flex; align-items: center; gap: 6px; }
   .section-title::after { content: ''; flex: 1; height: 1px; background: #222b26; }
   
+  .pro-badge { background: #c9f158; color: #000; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; margin-left: 6px; }
+
   .form-group { margin-bottom: 14px; text-align: left; }
   label { font-size: 11px; color: #a3b3a9; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-weight: 600; }
   
@@ -55,7 +57,7 @@
 <div class="box">
   <div class="header">
     <h2>Khan Institute YT Automation</h2>
-    <p>Power Mode Ultimate — AI Video Studio</p>
+    <p>AI Video Studio — Free & Pro Modes</p>
   </div>
 
   <!-- Server Link & Pro Password -->
@@ -66,113 +68,74 @@
       <input type="text" id="serverUrl" value="https://khan-yt-backend.onrender.com">
     </div>
     <div class="col form-group">
-      <label>🔑 Pro Access Password</label>
-      <input type="password" id="proPassword" placeholder="Enter Pro Password">
+      <label>🔑 Pro Access Password <span class="pro-badge">PRO</span></label>
+      <input type="password" id="proPassword" placeholder="Enter Pro Password for Pro Features">
     </div>
   </div>
 
-  <!-- Visual Style & Captions -->
-  <span class="section-title">2. Visual Engine & Captions</span>
+  <!-- Basic vs Pro Captions -->
+  <span class="section-title">2. Visuals & Captions</span>
   <div class="row">
     <div class="col form-group">
       <label>🎨 Visual Style Preset</label>
       <select id="visualStyle">
         <option value="cinematic-doc">Cinematic Documentary</option>
-        <option value="3d-anim">3D Animation / Pixar Style</option>
-        <option value="anime">Anime / Studio Ghibli</option>
-        <option value="whiteboard">Whiteboard / Hand Drawn</option>
-        <option value="explainer">2D Vector Explainer</option>
+        <option value="3d-anim">3D Animation / Pixar</option>
+        <option value="whiteboard">Whiteboard Explainer</option>
       </select>
     </div>
     <div class="col form-group">
-      <label>💬 Smart Auto-Captions</label>
+      <label>💬 Caption Styles</label>
       <select id="captionStyle">
-        <option value="capcut-yellow">CapCut Style (Yellow Highlight)</option>
-        <option value="tiktok-bold">TikTok Bold Pop-up</option>
-        <option value="clean-sub">Clean Cinema Subtitles</option>
+        <option value="clean-sub">Standard Cinema Subtitles (Free)</option>
+        <option value="capcut-yellow">CapCut Yellow Highlight (Pro 🔑)</option>
+        <option value="tiktok-bold">TikTok Dynamic Pop-up (Pro 🔑)</option>
         <option value="off">Disable Captions</option>
       </select>
     </div>
   </div>
 
-  <!-- BGM Audio Mixing & FX -->
-  <span class="section-title">3. BGM Auto-Mixing & Sound FX</span>
-  <div class="row">
-    <div class="col form-group">
-      <label>🎵 Background Music (BGM Track)</label>
-      <select id="bgmTrack">
-        <option value="suspense-mystery">Dark Suspense & Mystery</option>
-        <option value="dramatic-history">Dramatic Historical Beat</option>
-        <option value="energetic-hype">High Energy / Tech Hype</option>
-        <option value="calm-ambient">Calm Ambient Focus</option>
-        <option value="none">No Background Music</option>
-      </select>
-    </div>
-    <div class="col form-group">
-      <label>🎚️ Auto-Ducking (BGM Balance)</label>
-      <select id="bgmDucking">
-        <option value="auto-80">Smart Ducking (-80% during Voice)</option>
-        <option value="auto-60">Medium Ducking (-60% during Voice)</option>
-        <option value="off">Constant Volume (No Ducking)</option>
-      </select>
-    </div>
+  <!-- Custom BGM Upload & Sound FX -->
+  <span class="section-title">3. BGM Upload & Transition SFX</span>
+  <div class="form-group">
+    <label>🎵 Upload Custom Background Music (MP3) <span class="pro-badge">PRO 🔑</span></label>
+    <input type="file" id="bgmFile" accept="audio/*">
   </div>
 
   <div class="row">
     <div class="col form-group">
-      <label>🔊 Sound FX Transitions</label>
+      <label>🔊 Scene Transition SFX <span class="pro-badge">PRO 🔑</span></label>
       <select id="sfxMode">
-        <option value="whoosh-impact">Whooshes + Deep Riser SFX</option>
-        <option value="subtle-cinematic">Subtle Cinematic Hits</option>
-        <option value="none">No Sound FX</option>
+        <option value="none">No Transition SFX (Free)</option>
+        <option value="whoosh-impact">Auto Whooshes on Scene Switch (Pro 🔑)</option>
+        <option value="subtle-cinematic">Cinematic Sub-Hits (Pro 🔑)</option>
       </select>
     </div>
     <div class="col form-group">
       <label>🎥 Camera Motion</label>
       <select id="cameraMotion">
-        <option value="ken-burns">Ken Burns (Dynamic Zoom In/Out)</option>
-        <option value="pan-right">Slow Dynamic Pan</option>
-        <option value="static">Static (No Motion)</option>
+        <option value="static">Static Image (Free)</option>
+        <option value="ken-burns">Dynamic Ken Burns Zoom (Pro 🔑)</option>
       </select>
     </div>
   </div>
 
-  <!-- Audio Voice Controls -->
-  <span class="section-title">4. Humanized Voice Controls</span>
+  <!-- Voiceover Controls -->
+  <span class="section-title">4. Voiceover & Pro Humanizer</span>
   <div class="row">
     <div class="col form-group">
-      <label>🎙️ Voice Model</label>
+      <label>🎙️ Voiceover Model</label>
       <select id="voiceGender">
-        <option value="male-deep">👨 Urdu Male (Deep Doc Voice)</option>
-        <option value="female-calm">👩 Urdu Female (Storyteller)</option>
-        <option value="male-energetic">👨 English Male (Energetic)</option>
-        <option value="female-dramatic">👩 English Female (Dramatic)</option>
+        <option value="male-standard">👨 Standard Urdu Male (Free)</option>
+        <option value="female-standard">👩 Standard Urdu Female (Free)</option>
       </select>
     </div>
     <div class="col form-group">
-      <label>✂️ Silence Trim</label>
-      <select id="silenceTrim">
-        <option value="auto">Auto-Remove Pauses (Fast Pace)</option>
-        <option value="none">Keep Natural Pauses</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col form-group">
-      <label>🎚️ Pitch Modulation</label>
-      <select id="voicePitch">
-        <option value="+0Hz">Natural Pitch</option>
-        <option value="-5Hz">Deep Radio Voice (-5Hz)</option>
-        <option value="+4Hz">Soft Accent (+4Hz)</option>
-      </select>
-    </div>
-    <div class="col form-group">
-      <label>⚡ Pace & Speed</label>
-      <select id="voiceRate">
-        <option value="+0%">Normal Rate</option>
-        <option value="+10%">Dynamic Fast (+10%)</option>
-        <option value="-8%">Dramatic Slow (-8%)</option>
+      <label>🎭 Emotion & Humanizer <span class="pro-badge">PRO 🔑</span></label>
+      <select id="voiceEmotion">
+        <option value="none">Standard Pitch & Tone (Free)</option>
+        <option value="deep-doc">Deep Dramatic Documentary (Pro 🔑)</option>
+        <option value="energetic">High Energy Storytelling (Pro 🔑)</option>
       </select>
     </div>
   </div>
@@ -184,7 +147,7 @@
     <textarea id="scriptInput" placeholder="Voice Line || Image Prompt"></textarea>
   </div>
 
-  <button class="btn-main" onclick="startRender()">🚀 START PARALLEL POWER RENDER</button>
+  <button class="btn-main" onclick="startRender()">🚀 GENERATE AUTOMATED VIDEO</button>
 
   <div class="footer-branding">
     Created with ❤️ by <span>Cyber Expert Ahmad Khan</span>
@@ -197,39 +160,49 @@
     const password = document.getElementById('proPassword').value.trim();
     const visualStyle = document.getElementById('visualStyle').value;
     const captionStyle = document.getElementById('captionStyle').value;
-    const bgmTrack = document.getElementById('bgmTrack').value;
-    const bgmDucking = document.getElementById('bgmDucking').value;
+    const bgmFileInput = document.getElementById('bgmFile');
     const sfxMode = document.getElementById('sfxMode').value;
     const cameraMotion = document.getElementById('cameraMotion').value;
     const voiceGender = document.getElementById('voiceGender').value;
-    const silenceTrim = document.getElementById('silenceTrim').value;
-    const voicePitch = document.getElementById('voicePitch').value;
-    const voiceRate = document.getElementById('voiceRate').value;
+    const voiceEmotion = document.getElementById('voiceEmotion').value;
     const script = document.getElementById('scriptInput').value.trim();
     
     if(!serverUrl) { alert("سرور URL درج کریں!"); return; }
-    if(!password) { alert("پرو پاسورڈ داخل کرنا لازمی ہے!"); return; }
     if(!script) { alert("اسکرپٹ درج کریں!"); return; }
+
+    // Pro Feature Lock Verification
+    const isProFeatureUsed = (
+      captionStyle.includes('capcut') || captionStyle.includes('tiktok') ||
+      bgmFileInput.files.length > 0 ||
+      sfxMode !== 'none' ||
+      cameraMotion !== 'static' ||
+      voiceEmotion !== 'none'
+    );
+
+    if(isProFeatureUsed && !password) {
+      alert("🔒 آپ پرو فیچرز (Custom BGM, CapCut Captions, SFX) استعمال کر رہے ہیں۔ براہ کرم پہلے Pro Access Password درج کریں!");
+      return;
+    }
     
     const formData = new FormData();
     formData.append('password', password);
     formData.append('script', script);
     formData.append('visualStyle', visualStyle);
     formData.append('captionStyle', captionStyle);
-    formData.append('bgmTrack', bgmTrack);
-    formData.append('bgmDucking', bgmDucking);
     formData.append('sfxMode', sfxMode);
     formData.append('cameraMotion', cameraMotion);
-    formData.append('silenceTrim', silenceTrim);
     formData.append('voiceGender', voiceGender);
-    formData.append('voicePitch', voicePitch);
-    formData.append('voiceRate', voiceRate);
+    formData.append('voiceEmotion', voiceEmotion);
+
+    if(bgmFileInput.files.length > 0) {
+      formData.append('bgmFile', bgmFileInput.files[0]);
+    }
 
     try {
       const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
       const data = await response.json();
       if(response.ok) {
-        alert("🚀 آٹو مکسنگ ویڈیو پروسیسنگ شروع ہو گئی ہے! جاب ID: " + data.job_id);
+        alert("🚀 ویڈیو رینڈرنگ پروسیس شروع ہو گیا ہے! جاب ID: " + data.job_id);
       } else {
         alert("❌ ایرر: " + (data.detail || "غلط پاسورڈ یا سرور ایشو!"));
       }
