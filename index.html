@@ -68,10 +68,12 @@
     </select>
 
     <!-- Voiceover & Language Settings -->
-    <label>2. VOICEOVER & GENDER</label>
+    <label>2. VOICEOVER & LANGUAGE SELECTION</label>
     <select id="voiceGender">
-      <option value="male-standard">👨 Standard Urdu Male</option>
-      <option value="female-standard">👩 Standard Urdu Female</option>
+      <option value="male-ur">👨 Standard Urdu Male</option>
+      <option value="female-ur">👩 Standard Urdu Female</option>
+      <option value="male-en">👨 Standard English Male</option>
+      <option value="female-en">👩 Standard English Female</option>
     </select>
 
     <label style="margin-top:5px;">Emotion & Voice Humanizer <span class="pro-tag">🔒 PRO</span>:</label>
@@ -119,63 +121,97 @@
 
   <script>
     const serverUrl = "https://khan-yt-backend.onrender.com";
+    let pollInterval = null;
+
+    // Load saved Pro Key and Last Job ID on page load
+    window.onload = () => {
+      const savedPass = localStorage.getItem('pro_pass');
+      if (savedPass) {
+        document.getElementById('proPassword').value = savedPass;
+        verifyPassword();
+      }
+      const lastJobId = localStorage.getItem('last_job_id');
+      if (lastJobId) {
+        document.getElementById('checkJobId').value = lastJobId;
+      }
+    };
 
     function showStatus(text, showDownload = false, url = "") {
       const area = document.getElementById('statusArea');
       const textDiv = document.getElementById('statusText');
-      area.style.display = "block";
-      textDiv.innerHTML = text;
-      if(showDownload) {
-        textDiv.innerHTML += `<br><a href="${url}" class="download-link" target="_blank">⬇️ Download Video</a>`;
+      area.style.display = 'block';
+
+      if (showDownload) {
+        textDiv.innerHTML = `${text}<br><a href="${url}" class="download-link" download target="_blank">📥 Download Video MP4</a>`;
+      } else {
+        textDiv.innerHTML = text;
       }
     }
 
     function verifyPassword() {
       const pass = document.getElementById('proPassword').value.trim();
-      const statusDiv = document.getElementById('passStatus');
+      const statusMsg = document.getElementById('passStatus');
+      
       if (pass === "khan_pro_automation") {
-        statusDiv.style.color = "#4ade80";
-        statusDiv.innerText = "✅ Password Correct! Pro Features Unlocked.";
+        statusMsg.style.color = "#22c55e";
+        statusMsg.innerText = "🟢 PRO Features Unlocked Successfully!";
+        localStorage.setItem('pro_pass', pass);
+        
+        // Enable PRO Dropdowns
         document.getElementById('imageEngine').disabled = false;
-        document.getElementById('captionStyle').disabled = false;
-        document.getElementById('sfxMode').disabled = false;
-        document.getElementById('cameraMotion').disabled = false;
         document.getElementById('voiceEmotion').disabled = false;
-        document.querySelectorAll('.pro-tag').forEach(tag => {
-          tag.innerText = "🔓 UNLOCKED";
-          tag.style.color = "#4ade80";
-        });
+        document.getElementById('captionStyle').disabled = false;
+        document.getElementById('cameraMotion').disabled = false;
+        document.getElementById('sfxMode').disabled = false;
       } else {
-        statusDiv.style.color = "#f87171";
-        statusDiv.innerText = "❌ Incorrect Password!";
+        statusMsg.style.color = "#ef4444";
+        statusMsg.innerText = "❌ Incorrect Pro Password!";
       }
     }
 
-    async function checkJobStatus() {
-      const jobId = document.getElementById('checkJobId').value.trim();
-      if(!jobId) { alert("Job ID درج کریں!"); return; }
-      showStatus("⏳ Checking status for Job ID: " + jobId);
+    async function pollStatus(jobId) {
       try {
         const res = await fetch(`${serverUrl}/status/${jobId}`);
-        const result = await res.json();
-        if(result.status === "completed") {
-          showStatus("🎉 ویڈیو تیار ہے!", true, `${serverUrl}${result.video_url}`);
-        } else if(result.status === "processing") {
-          showStatus("⏳ ویڈیو ابھی بن رہی ہے، تھوڑی دیر میں دوبارہ چیک کریں۔");
-        } else {
-          showStatus("❌ Job ID درست نہیں ہے یا پروسیسنگ میں ایرر آیا۔");
+        if (!res.ok) {
+          showStatus("❌ Job ID نہیں ملی یا سرور ایرر آیا۔");
+          clearInterval(pollInterval);
+          return;
         }
-      } catch(e) { showStatus("❌ سرور سے رابطہ نہیں ہو پا رہا۔"); }
+        
+        const result = await res.json();
+        
+        if (result.status === "completed") {
+          clearInterval(pollInterval);
+          showStatus("🎉 ویڈیو کامیابی کے ساتھ تیار ہو گئی ہے!", true, `${serverUrl}${result.video_url}`);
+        } else if (result.status === "processing") {
+          showStatus(`⏳ پروسیسنگ جاری ہے... (Job ID: ${jobId})<br><small>براہ کرم انتظار کریں، اسٹیٹس خود بخود اپ ڈیٹ ہو جائے گا۔</small>`);
+        } else if (result.status === "failed") {
+          clearInterval(pollInterval);
+          showStatus(`❌ ویڈیو رینڈرنگ میں مسئلہ آیا: ${result.error || 'Unknown Error'}`);
+        }
+      } catch (e) {
+        showStatus("⏳ سرور سے رابطہ قائم کیا جا رہا ہے۔۔۔");
+      }
+    }
+
+    function checkJobStatus() {
+      const jobId = document.getElementById('checkJobId').value.trim();
+      if (!jobId) { alert("براہ کرم Job ID درج کریں!"); return; }
+      
+      localStorage.setItem('last_job_id', jobId);
+      if (pollInterval) clearInterval(pollInterval);
+      pollStatus(jobId);
+      pollInterval = setInterval(() => pollStatus(jobId), 5000);
     }
 
     async function startRender() {
       const script = document.getElementById('scriptInput').value.trim();
-      if(!script) { alert("اسکرپٹ درج کریں!"); return; }
+      if (!script) { alert("براہ کرم اسکرپٹ درج کریں!"); return; }
 
       const formData = new FormData();
       formData.append('password', document.getElementById('proPassword').value.trim());
       formData.append('script', script);
-      formData.append('videoFormat', document.getElementById('videoFormat').value); // Short / Long Video Option Added
+      formData.append('videoFormat', document.getElementById('videoFormat').value);
       formData.append('visualStyle', document.getElementById('visualStyle').value);
       formData.append('imageEngine', document.getElementById('imageEngine').value);
       formData.append('voiceGender', document.getElementById('voiceGender').value);
@@ -185,19 +221,27 @@
       formData.append('cameraMotion', document.getElementById('cameraMotion').value);
 
       const bgm = document.getElementById('bgmFile').files[0];
-      if(bgm) formData.append('bgmFile', bgm);
+      if (bgm) formData.append('bgmFile', bgm);
 
-      showStatus("🚀 ویڈیو ریکویسٹ پروسیس ہو رہی ہے۔۔۔");
+      showStatus("🚀 ریکویسٹ بھیجی جا رہی ہے، براہ کرم انتظار کریں...");
 
       try {
         const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
         const data = await response.json();
-        if(response.ok) {
-          showStatus("✅ جنریشن شروع ہو چکی ہے!<br><b>Job ID: " + data.job_id + "</b><br>اس ID کو کاپی کر کے محفوظ رکھ لیں، موبائل بند ہونے پر بھی اوپر سرچ سے ویڈیو مل جائے گی۔");
+        
+        if (response.ok && data.job_id) {
+          document.getElementById('checkJobId').value = data.job_id;
+          localStorage.setItem('last_job_id', data.job_id);
+          
+          if (pollInterval) clearInterval(pollInterval);
+          pollStatus(data.job_id);
+          pollInterval = setInterval(() => pollStatus(data.job_id), 5000);
         } else {
-          showStatus("❌ " + (data.detail || "پروسیسنگ میں مسئلہ آیا۔"));
+          showStatus("❌ " + (data.detail || "ریکویسٹ بھیجنے میں مسئلہ آیا۔"));
         }
-      } catch (err) { showStatus("❌ سرور کنکشن کا مسئلہ ہے۔ Check کریں Render آن ہے؟"); }
+      } catch (err) {
+        showStatus("❌ سرور کنیکشن فیل ہو گیا۔ یقینی بنائیں کہ Render Backend لائیو ہے۔");
+      }
     }
   </script>
 </body>
