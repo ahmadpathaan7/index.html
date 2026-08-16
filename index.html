@@ -46,8 +46,15 @@
     </div>
     <div id="passStatus" class="status-msg"></div>
 
-    <!-- Visual Settings & Image Sources -->
-    <label>1. VISUAL STYLE & IMAGE ENGINE</label>
+    <!-- Visual Settings & Format -->
+    <label>1. VIDEO FORMAT & VISUAL ENGINE</label>
+    <label style="margin-top:2px;">Video Type / Aspect Ratio:</label>
+    <select id="videoFormat">
+      <option value="9:16">📱 Short / Reel / TikTok (9:16)</option>
+      <option value="16:9">📺 Long YouTube Video (16:9)</option>
+    </select>
+
+    <label style="margin-top:5px;">Visual Style:</label>
     <select id="visualStyle">
       <option value="cinematic-doc">Cinematic Documentary</option>
       <option value="hyper-real">Hyper Realistic</option>
@@ -168,6 +175,7 @@
       const formData = new FormData();
       formData.append('password', document.getElementById('proPassword').value.trim());
       formData.append('script', script);
+      formData.append('videoFormat', document.getElementById('videoFormat').value); // Short / Long Video Option Added
       formData.append('visualStyle', document.getElementById('visualStyle').value);
       formData.append('imageEngine', document.getElementById('imageEngine').value);
       formData.append('voiceGender', document.getElementById('voiceGender').value);
