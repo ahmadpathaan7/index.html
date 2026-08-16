@@ -16,13 +16,17 @@
     .check-btn { width: 35%; margin-top: 0; background-color: #a855f7; color: #fff; border: none; font-weight: bold; cursor: pointer; }
     
     button.gen-btn { background-color: #9ecc3b; color: #000; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; border: none; }
-    #statusArea { margin-top: 20px; padding: 15px; background: #2a2a2a; border-radius: 8px; display: none; }
+    button.gen-btn:disabled { background-color: #555; cursor: not-allowed; }
+    #statusArea { margin-top: 20px; padding: 15px; background: #2a2a2a; border-radius: 8px; display: none; font-weight: bold; }
     .download-link { display: inline-block; margin-top: 10px; padding: 10px 20px; background: #9ecc3b; color: #000; text-decoration: none; font-weight: bold; border-radius: 6px; }
     
     textarea { height: 100px; resize: vertical; }
     .pro-tag { color: #eab308; font-size: 11px; float: right; font-weight: bold; }
     .status-msg { font-size: 12px; text-align: left; margin-top: 4px; font-weight: bold; }
     hr { border: 0; height: 1px; background: #333; margin: 20px 0; }
+    .success { color: #2ecc71; }
+    .error { color: #e74c3c; }
+    .processing { color: #f1c40f; }
   </style>
 </head>
 <body>
@@ -33,7 +37,7 @@
     <label>🔍 Check Status by Job ID:</label>
     <div class="pass-group">
       <input type="text" id="checkJobId" placeholder="Enter Job ID (e.g. 621695)">
-      <button class="check-btn" onclick="checkJobStatus()">Check Status</button>
+      <button class="check-btn" onclick="checkJobStatusManual()">Check Status</button>
     </div>
 
     <hr>
@@ -107,141 +111,143 @@
     <label style="margin-top:5px;">🎵 Upload Custom Background Music (MP3):</label>
     <input type="file" id="bgmFile" accept="audio/*">
 
-    <!-- Script Input -->
-    <label>5. SCRIPT INPUT</label>
-    <textarea id="scriptInput" placeholder="یہ کہانی ہے... || A dramatic shot of..."></textarea>
+    <!-- Script Input Section -->
+    <label style="margin-top:15px;">5. SCRIPT INPUT</label>
+    <textarea id="scriptInput" placeholder="یہاں اپنا سکرپٹ درج کریں..."></textarea>
 
-    <button class="gen-btn" onclick="startRender()">🚀 GENERATE AUTOMATED VIDEO</button>
+    <button id="genBtn" class="gen-btn" onclick="startRender()">🚀 GENERATE AUTOMATED VIDEO</button>
 
-    <!-- Status & Download Area -->
-    <div id="statusArea">
-      <div id="statusText">Processing...</div>
-    </div>
+    <div id="statusArea"></div>
   </div>
 
   <script>
-    const serverUrl = "https://khan-yt-backend.onrender.com";
+    const RENDER_BASE_URL = "https://khan-yt-backend.onrender.com";
     let pollInterval = null;
 
-    // Load saved Pro Key and Last Job ID on page load
-    window.onload = () => {
-      const savedPass = localStorage.getItem('pro_pass');
-      if (savedPass) {
-        document.getElementById('proPassword').value = savedPass;
-        verifyPassword();
+    // Password Verification
+    function verifyPassword() {
+      const pass = document.getElementById("proPassword").value;
+      const msg = document.getElementById("passStatus");
+      if (pass === "khan_pro_automation") {
+        msg.style.color = "#2ecc71";
+        msg.innerText = "✅ Pro Unlocked Successfully!";
+        document.getElementById("imageEngine").disabled = false;
+        document.getElementById("voiceEmotion").disabled = false;
+        document.getElementById("captionStyle").disabled = false;
+        document.getElementById("cameraMotion").disabled = false;
+        document.getElementById("sfxMode").disabled = false;
+      } else {
+        msg.style.color = "#e74c3c";
+        msg.innerText = "❌ Incorrect Pro Password!";
       }
-      const lastJobId = localStorage.getItem('last_job_id');
-      if (lastJobId) {
-        document.getElementById('checkJobId').value = lastJobId;
+    }
+
+    // Auto load active job on page reload
+    window.onload = function() {
+      const savedJobId = localStorage.getItem("active_job_id");
+      if (savedJobId) {
+        showStatus("⏳ Resume Status: Checking background rendering process...", "processing");
+        trackJobStatus(savedJobId);
       }
     };
 
-    function showStatus(text, showDownload = false, url = "") {
-      const area = document.getElementById('statusArea');
-      const textDiv = document.getElementById('statusText');
-      area.style.display = 'block';
-
-      if (showDownload) {
-        textDiv.innerHTML = `${text}<br><a href="${url}" class="download-link" download target="_blank">📥 Download Video MP4</a>`;
-      } else {
-        textDiv.innerHTML = text;
-      }
-    }
-
-    function verifyPassword() {
-      const pass = document.getElementById('proPassword').value.trim();
-      const statusMsg = document.getElementById('passStatus');
-      
-      if (pass === "khan_pro_automation") {
-        statusMsg.style.color = "#22c55e";
-        statusMsg.innerText = "🟢 PRO Features Unlocked Successfully!";
-        localStorage.setItem('pro_pass', pass);
-        
-        // Enable PRO Dropdowns
-        document.getElementById('imageEngine').disabled = false;
-        document.getElementById('voiceEmotion').disabled = false;
-        document.getElementById('captionStyle').disabled = false;
-        document.getElementById('cameraMotion').disabled = false;
-        document.getElementById('sfxMode').disabled = false;
-      } else {
-        statusMsg.style.color = "#ef4444";
-        statusMsg.innerText = "❌ Incorrect Pro Password!";
-      }
-    }
-
-    async function pollStatus(jobId) {
-      try {
-        const res = await fetch(`${serverUrl}/status/${jobId}`);
-        if (!res.ok) {
-          showStatus("❌ Job ID نہیں ملی یا سرور ایرر آیا۔");
-          clearInterval(pollInterval);
-          return;
-        }
-        
-        const result = await res.json();
-        
-        if (result.status === "completed") {
-          clearInterval(pollInterval);
-          showStatus("🎉 ویڈیو کامیابی کے ساتھ تیار ہو گئی ہے!", true, `${serverUrl}${result.video_url}`);
-        } else if (result.status === "processing") {
-          showStatus(`⏳ پروسیسنگ جاری ہے... (Job ID: ${jobId})<br><small>براہ کرم انتظار کریں، اسٹیٹس خود بخود اپ ڈیٹ ہو جائے گا۔</small>`);
-        } else if (result.status === "failed") {
-          clearInterval(pollInterval);
-          showStatus(`❌ ویڈیو رینڈرنگ میں مسئلہ آیا: ${result.error || 'Unknown Error'}`);
-        }
-      } catch (e) {
-        showStatus("⏳ سرور سے رابطہ قائم کیا جا رہا ہے۔۔۔");
-      }
-    }
-
-    function checkJobStatus() {
-      const jobId = document.getElementById('checkJobId').value.trim();
-      if (!jobId) { alert("براہ کرم Job ID درج کریں!"); return; }
-      
-      localStorage.setItem('last_job_id', jobId);
-      if (pollInterval) clearInterval(pollInterval);
-      pollStatus(jobId);
-      pollInterval = setInterval(() => pollStatus(jobId), 5000);
-    }
-
+    // Start Render Request
     async function startRender() {
-      const script = document.getElementById('scriptInput').value.trim();
-      if (!script) { alert("براہ کرم اسکرپٹ درج کریں!"); return; }
+      const script = document.getElementById("scriptInput").value.trim();
+      if (!script) {
+        alert("Please enter a script!");
+        return;
+      }
+
+      const genBtn = document.getElementById("genBtn");
+      genBtn.disabled = true;
+      showStatus("⏳ Starting render process on server...", "processing");
 
       const formData = new FormData();
-      formData.append('password', document.getElementById('proPassword').value.trim());
-      formData.append('script', script);
-      formData.append('videoFormat', document.getElementById('videoFormat').value);
-      formData.append('visualStyle', document.getElementById('visualStyle').value);
-      formData.append('imageEngine', document.getElementById('imageEngine').value);
-      formData.append('voiceGender', document.getElementById('voiceGender').value);
-      formData.append('voiceEmotion', document.getElementById('voiceEmotion').value);
-      formData.append('captionStyle', document.getElementById('captionStyle').value);
-      formData.append('sfxMode', document.getElementById('sfxMode').value);
-      formData.append('cameraMotion', document.getElementById('cameraMotion').value);
+      formData.append("script", script);
+      formData.append("videoFormat", document.getElementById("videoFormat").value);
+      formData.append("voiceGender", document.getElementById("voiceGender").value);
+      formData.append("password", document.getElementById("proPassword").value);
 
-      const bgm = document.getElementById('bgmFile').files[0];
-      if (bgm) formData.append('bgmFile', bgm);
-
-      showStatus("🚀 ریکویسٹ بھیجی جا رہی ہے، براہ کرم انتظار کریں...");
+      const bgmInput = document.getElementById("bgmFile");
+      if (bgmInput.files[0]) {
+        formData.append("bgmFile", bgmInput.files[0]);
+      }
 
       try {
-        const response = await fetch(`${serverUrl}/render`, { method: 'POST', body: formData });
+        const response = await fetch(`${RENDER_BASE_URL}/render`, {
+          method: "POST",
+          body: formData
+        });
+
         const data = await response.json();
-        
-        if (response.ok && data.job_id) {
-          document.getElementById('checkJobId').value = data.job_id;
-          localStorage.setItem('last_job_id', data.job_id);
-          
-          if (pollInterval) clearInterval(pollInterval);
-          pollStatus(data.job_id);
-          pollInterval = setInterval(() => pollStatus(data.job_id), 5000);
+
+        if (data.status === "started" && data.job_id) {
+          localStorage.setItem("active_job_id", data.job_id);
+          trackJobStatus(data.job_id);
         } else {
-          showStatus("❌ " + (data.detail || "ریکویسٹ بھیجنے میں مسئلہ آیا۔"));
+          showStatus("❌ Failed to initialize job on server.", "error");
+          genBtn.disabled = false;
         }
-      } catch (err) {
-        showStatus("❌ سرور کنیکشن فیل ہو گیا۔ یقینی بنائیں کہ Render Backend لائیو ہے۔");
+      } catch (error) {
+        showStatus("❌ Unable to connect to server.", "error");
+        genBtn.disabled = false;
       }
+    }
+
+    // Dynamic Job Tracking via MongoDB
+    function trackJobStatus(jobId) {
+      if (pollInterval) clearInterval(pollInterval);
+
+      pollInterval = setInterval(async () => {
+        try {
+          const response = await fetch(`${RENDER_BASE_URL}/status/${jobId}`);
+          if (response.status === 404) {
+            showStatus(`❌ Job ID ${jobId} not found or expired.`, "error");
+            clearJobTracking();
+            return;
+          }
+
+          const data = await response.json();
+
+          if (data.status === "processing") {
+            showStatus(`⏳ Job #${jobId} Processing: ${data.message || 'Rendering video...'}`, "processing");
+          } else if (data.status === "completed") {
+            const downloadUrl = `${RENDER_BASE_URL}${data.video_url}`;
+            showStatus(`✅ Video Rendered Successfully!<br><br><a href="${downloadUrl}" target="_blank" class="download-link">📥 Download Ready Video</a>`, "success");
+            clearJobTracking();
+          } else if (data.status === "failed") {
+            showStatus(`❌ Render Error: ${data.error || 'Unknown error'}`, "error");
+            clearJobTracking();
+          }
+        } catch (err) {
+          showStatus("🔄 Connection paused. Reconnecting to server status...", "processing");
+        }
+      }, 4000);
+    }
+
+    // Manual Job Checker
+    function checkJobStatusManual() {
+      const manualJobId = document.getElementById("checkJobId").value.trim();
+      if (!manualJobId) {
+        alert("Please enter a Job ID");
+        return;
+      }
+      showStatus(`🔍 Checking status for Job #${manualJobId}...`, "processing");
+      trackJobStatus(manualJobId);
+    }
+
+    function clearJobTracking() {
+      clearInterval(pollInterval);
+      localStorage.removeItem("active_job_id");
+      document.getElementById("genBtn").disabled = false;
+    }
+
+    function showStatus(msg, typeClass) {
+      const area = document.getElementById("statusArea");
+      area.style.display = "block";
+      area.className = typeClass;
+      area.innerHTML = msg;
     }
   </script>
 </body>
